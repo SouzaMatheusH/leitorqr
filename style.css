@@ -1,48 +1,94 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    min-height: 100vh;
+    justify-content: flex-start;
+    min-height: 100vh; /* Garante que ocupa a altura total da tela */
     margin: 0;
+    padding: 20px; /* Adiciona um padding geral para não colar nas bordas */
     background-color: #f0f2f5;
     color: #333;
+    box-sizing: border-box; /* Inclui padding e borda na largura e altura total */
 }
 
 .container {
     background-color: #fff;
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     text-align: center;
-    max-width: 600px;
-    width: 90%;
+    width: 100%; /* Ocupa a largura total disponível */
+    max-width: 550px; /* Limita a largura em telas maiores para melhor leitura */
+    box-sizing: border-box;
 }
 
 h1 {
     color: #007bff;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    font-size: 2em; /* Tamanho maior para título em celular */
+}
+
+.description {
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 25px;
 }
 
 #qr-reader {
-    width: 100% !important; /* Garante que o leitor ocupe a largura total */
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    overflow: hidden; /* Para garantir que o vídeo se ajuste */
+    width: 100%; /* A área da câmera ocupa 100% do contêiner */
+    margin-bottom: 25px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden; /* Garante que o vídeo se ajuste perfeitamente */
+}
+
+/* Garante que o elemento de vídeo dentro do leitor ocupe 100% da largura */
+#qr-reader video {
+    width: 100% !important;
+    height: auto !important; /* Ajusta a altura automaticamente */
+    display: block;
 }
 
 #qr-reader-results {
     margin-top: 20px;
-    padding: 15px;
+    padding: 20px;
     border: 1px solid #e0e0e0;
-    border-radius: 5px;
+    border-radius: 8px;
     background-color: #f9f9f9;
+    width: 100%; /* Ocupa a largura total do contêiner */
+    box-sizing: border-box;
+}
+
+#qr-reader-results h2 {
+    font-size: 1.3em;
+    color: #444;
+    margin-bottom: 10px;
 }
 
 #result-text {
-    font-size: 1.1em;
+    font-size: 1.2em;
     font-weight: bold;
-    color: #555;
-    word-wrap: break-word; /* Para quebrar palavras longas */
+    color: #007bff; /* Destaca o texto do resultado */
+    word-wrap: break-word; /* Quebra linhas longas de texto */
+    min-height: 1.5em; /* Garante um espaço mínimo para o texto */
+}
+
+/* Mídias queries para ajustes finos em telas muito pequenas */
+@media (max-width: 400px) {
+    .container {
+        padding: 20px 15px; /* Menos padding lateral em telas muito pequenas */
+    }
+
+    h1 {
+        font-size: 1.7em;
+    }
+
+    .description {
+        font-size: 1em;
+    }
+
+    #qr-reader-results {
+        padding: 15px;
+    }
 }
