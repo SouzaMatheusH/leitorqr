@@ -1,0 +1,49 @@
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+}
+
+h1 {
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+#qr-reader {
+    width: 100% !important; /* Garante que o leitor ocupe a largura total */
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden; /* Para garantir que o vídeo se ajuste */
+}
+
+#qr-reader-results {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+#result-text {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #555;
+    word-wrap: break-word; /* Para quebrar palavras longas */
+}
