@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Leitor de QR Code</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
       text-align: center;
       padding: 20px;
     }
@@ -16,41 +16,41 @@
     }
     #result {
       margin-top: 20px;
-      font-size: 18px;
-      color: green;
       white-space: pre-line;
+      color: green;
     }
   </style>
 </head>
 <body>
-  <h1>Leitor de QR</h1>
+  <h1>Leitor de QR Code</h1>
   <div id="reader"></div>
   <div id="result">Aguardando QR Code...</div>
 
   <script>
     function onScanSuccess(qrCodeMessage) {
       const resultDiv = document.getElementById('result');
-      resultDiv.innerText = 'QR Code: ' + qrCodeMessage;
+      resultDiv.innerText = 'QR Code lido: ' + qrCodeMessage;
 
-      // Substitua abaixo pelo IP do ESP32 exibido no monitor serial
-      const esp32IP = 'http://192.168.158.61';
+      // IP do ESP32 que apareceu no monitor serial
+      const esp32IP = 'http://192.168.43.201';
 
       fetch(`${esp32IP}/qrcode?data=${encodeURIComponent(qrCodeMessage)}`)
         .then(response => response.text())
         .then(data => {
-          console.log("ESP32:", data);
-          resultDiv.innerText += `\nResposta do ESP32: ${data}`;
+          console.log("ESP32 respondeu:", data);
+          resultDiv.innerText += `\nESP32: ${data}`;
         })
         .catch(error => {
-          console.error("Erro ao enviar:", error);
+          console.error("Erro ao enviar para o ESP32:", error);
           resultDiv.innerText += '\nErro ao enviar para o ESP32';
         });
 
+      // Parar o scanner após leitura
       html5QrcodeScanner.clear();
     }
 
     function onScanError(errorMessage) {
-      // Ignorar erros temporários
+      // Erros não críticos são ignorados
     }
 
     const html5QrcodeScanner = new Html5QrcodeScanner(
