@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Leitor de QR Code</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
     }
@@ -16,46 +16,46 @@
     }
     #result {
       margin-top: 20px;
-      white-space: pre-line;
-      color: green;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Leitor de QR</h1>
+  <h1>Leitor de QR Code</h1>
   <div id="reader"></div>
-  <div id="result">Aguardando QR Code...</div>
+  <div id="result">Aguardando leitura...</div>
 
   <script>
+    const esp32IP = "http://192.168.158.61"; // <-- coloque aqui o IP exato do ESP32
+
     function onScanSuccess(qrCodeMessage) {
       const resultDiv = document.getElementById('result');
       resultDiv.innerText = 'QR Code lido: ' + qrCodeMessage;
 
-      // IP do ESP32 que apareceu no monitor serial
-      const esp32IP = 'http://192.168.158.61';
-
       fetch(`${esp32IP}/qrcode?data=${encodeURIComponent(qrCodeMessage)}`)
-        .then(response => response.text())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Erro de resposta do ESP: " + response.status);
+          }
+          return response.text();
+        })
         .then(data => {
-          console.log("ESP32 respondeu:", data);
-          resultDiv.innerText += `\nESP32: ${data}`;
+          console.log("Resposta do ESP:", data);
+          resultDiv.innerText += '\nESP32 respondeu: ' + data;
         })
         .catch(error => {
-          console.error("Erro ao enviar para o ESP32:", error);
-          resultDiv.innerText += '\nErro ao enviar para o ESP32';
+          console.error("Erro ao enviar para o ESP:", error);
+          resultDiv.innerText += '\nErro ao enviar: ' + error.message;
         });
 
-      // Parar o scanner após leitura
-      html5QrcodeScanner.clear();
+      html5QrcodeScanner.clear(); // Para o scanner após uma leitura
     }
 
     function onScanError(errorMessage) {
-      // Erros não críticos são ignorados
+      // Ignora erros não críticos
     }
 
-    const html5QrcodeScanner = new Html5QrcodeScanner(
-      "reader", { fps: 10, qrbox: 250 }, false
-    );
+    const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
     html5QrcodeScanner.render(onScanSuccess, onScanError);
   </script>
 </body>
