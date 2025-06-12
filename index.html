@@ -33,7 +33,7 @@
       resultDiv.innerText = 'QR Code: ' + qrCodeMessage;
 
       // Substitua abaixo pelo IP do ESP32 exibido no monitor serial
-      const esp32IP = 'http://192.168.43.201';
+      const esp32IP = 'http://192.168.158.61';
 
       fetch(`${esp32IP}/qrcode?data=${encodeURIComponent(qrCodeMessage)}`)
         .then(response => response.text())
