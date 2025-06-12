@@ -1,25 +1,55 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leitor de QR Code do Celular</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Leitor de QR Code</title>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      margin: auto;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Leitor de QR</h1>
-        <p class="description">Aponte a câmera do seu celular para um QR Code.</p>
-        
-        <div id="qr-reader"></div>
+  <h1>Leitor de QR Code</h1>
+  <div id="reader"></div>
+  <p id="resultado">Resultado: <strong>Nenhum QR code detectado</strong></p>
 
-        <div id="qr-reader-results">
-            <h2>Resultado da Leitura:</h2>
-            <p id="result-text">Nenhum QR Code detectado ainda.</p>
-        </div>
-    </div>
+  <script>
+    function onScanSuccess(decodedText, decodedResult) {
+      document.getElementById("resultado").innerHTML =
+        "Resultado: <strong>" + decodedText + "</strong>";
+    }
 
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/dist/html5-qrcode.min.js"></script>
-    <script src="script.js"></script>
+    function onScanError(errorMessage) {
+      // Erros são ignorados por padrão, mas você pode logar se quiser
+    }
+
+    const html5QrCode = new Html5Qrcode("reader");
+
+    Html5Qrcode.getCameras().then(cameras => {
+      if (cameras && cameras.length) {
+        const cameraId = cameras[0].id;
+        html5QrCode.start(
+          cameraId,
+          {
+            fps: 10,
+            qrbox: 250
+          },
+          onScanSuccess,
+          onScanError
+        );
+      }
+    }).catch(err => {
+      document.getElementById("resultado").innerHTML = "Erro ao acessar a câmera: " + err;
+    });
+  </script>
 </body>
 </html>
