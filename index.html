@@ -18,6 +18,7 @@
       margin-top: 20px;
       font-size: 18px;
       color: green;
+      white-space: pre-line;
     }
   </style>
 </head>
@@ -28,32 +29,30 @@
 
   <script>
     function onScanSuccess(qrCodeMessage) {
-      document.getElementById('result').innerText = 'QR Code: ' + qrCodeMessage;
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerText = 'QR Code: ' + qrCodeMessage;
 
-      // IP do ESP32 (ajuste conforme necessário)
-      const esp32IP = '192.168.4.1';
+      // Substitua abaixo pelo IP do ESP32 exibido no monitor serial
+      const esp32IP = 'http://192.168.43.201';
 
-      // Envia a string do QR Code via Wi-Fi para o ESP32
-      fetch(`http://${esp32IP}/qrcode?data=${encodeURIComponent(qrCodeMessage)}`)
+      fetch(`${esp32IP}/qrcode?data=${encodeURIComponent(qrCodeMessage)}`)
         .then(response => response.text())
         .then(data => {
-          console.log("Resposta do ESP32:", data);
-          document.getElementById('result').innerText += `\nESP32: ${data}`;
+          console.log("ESP32:", data);
+          resultDiv.innerText += `\nResposta do ESP32: ${data}`;
         })
         .catch(error => {
-          console.error("Erro ao enviar para o ESP32:", error);
-          document.getElementById('result').innerText += '\nErro ao enviar para o ESP32';
+          console.error("Erro ao enviar:", error);
+          resultDiv.innerText += '\nErro ao enviar para o ESP32';
         });
 
-      // Para o scanner após leitura
       html5QrcodeScanner.clear();
     }
 
     function onScanError(errorMessage) {
-      // Ignorar erros por enquanto
+      // Ignorar erros temporários
     }
 
-    // Inicia o scanner
     const html5QrcodeScanner = new Html5QrcodeScanner(
       "reader", { fps: 10, qrbox: 250 }, false
     );
