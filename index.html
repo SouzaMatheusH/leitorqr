@@ -1,55 +1,63 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Leitor de QR Code</title>
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
     }
     #reader {
-      width: 100%;
-      max-width: 400px;
+      width: 300px;
       margin: auto;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: green;
     }
   </style>
 </head>
 <body>
   <h1>Leitor de QR Code</h1>
   <div id="reader"></div>
-  <p id="resultado">Resultado: <strong>Nenhum QR code detectado</strong></p>
+  <div id="result">Aguardando QR Code...</div>
 
   <script>
-    function onScanSuccess(decodedText, decodedResult) {
-      document.getElementById("resultado").innerHTML =
-        "Resultado: <strong>" + decodedText + "</strong>";
+    function onScanSuccess(qrCodeMessage) {
+      document.getElementById('result').innerText = 'QR Code: ' + qrCodeMessage;
+
+      // IP do ESP32 (ajuste conforme necessário)
+      const esp32IP = '192.168.4.1';
+
+      // Envia a string do QR Code via Wi-Fi para o ESP32
+      fetch(`http://${esp32IP}/qrcode?data=${encodeURIComponent(qrCodeMessage)}`)
+        .then(response => response.text())
+        .then(data => {
+          console.log("Resposta do ESP32:", data);
+          document.getElementById('result').innerText += `\nESP32: ${data}`;
+        })
+        .catch(error => {
+          console.error("Erro ao enviar para o ESP32:", error);
+          document.getElementById('result').innerText += '\nErro ao enviar para o ESP32';
+        });
+
+      // Para o scanner após leitura
+      html5QrcodeScanner.clear();
     }
 
     function onScanError(errorMessage) {
-      // Erros são ignorados por padrão, mas você pode logar se quiser
+      // Ignorar erros por enquanto
     }
 
-    const html5QrCode = new Html5Qrcode("reader");
-
-    Html5Qrcode.getCameras().then(cameras => {
-      if (cameras && cameras.length) {
-        const cameraId = cameras[0].id;
-        html5QrCode.start(
-          cameraId,
-          {
-            fps: 10,
-            qrbox: 250
-          },
-          onScanSuccess,
-          onScanError
-        );
-      }
-    }).catch(err => {
-      document.getElementById("resultado").innerHTML = "Erro ao acessar a câmera: " + err;
-    });
+    // Inicia o scanner
+    const html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader", { fps: 10, qrbox: 250 }, false
+    );
+    html5QrcodeScanner.render(onScanSuccess, onScanError);
   </script>
 </body>
 </html>
